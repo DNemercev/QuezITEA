@@ -1,10 +1,3 @@
-//
-//  ListOfTestsTableViewCell.swift
-//  Quse
-//
-//  Created by Nemercev Dmytro on 13.10.2022.
-//
-
 import UIKit
 
 class ListOfTestsTableViewCell: UITableViewCell {
@@ -21,17 +14,30 @@ class ListOfTestsTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
+    func changeStars(isEmptyStar: Bool) -> UIImage? {
+        if isEmptyStar {
+            return UIImage(systemName: "star")?.withTintColor(starColor, renderingMode: .alwaysOriginal)
+        } else {
+            return UIImage(systemName: "star.fill")?.withTintColor(starColor, renderingMode: .alwaysOriginal)
+        }
+    }
+
     func showRaiting(raiting: Int) {
-        if (0...5).contains(raiting) {
-            for num in 0...raiting {
-                raitingStarsOutleCollection[num].image = UIImage(systemName: "star.fill")?.withTintColor(starColor, renderingMode: .alwaysOriginal)
-            }
+        var fullStars = (1...5).contains(raiting) ? raiting : 0
+        
+        for num in 0..<5 {
+            raitingStarsOutleCollection[num].image = changeStars(isEmptyStar: true)
+        }
+        
+        while (1...5).contains(fullStars) {
+            raitingStarsOutleCollection[fullStars - 1].image = changeStars(isEmptyStar: false)
+            fullStars -= 1
         }
     }
     
-    func configTestCell(raiting: Int, testName: String, groupImage: String) {
-        showRaiting(raiting: raiting)
-        categoryImageView.image = UIImage(systemName: groupImage)
-        testNameLabel.text = testName
+    func configTestCell(test: Tests?) {
+        showRaiting(raiting: test?.testRaiting ?? 0)
+        categoryImageView.image = UIImage(systemName: test?.testGroupImage ?? "")
+        testNameLabel.text = test?.testName ?? ""
     }
 }
