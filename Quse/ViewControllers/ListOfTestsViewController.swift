@@ -4,6 +4,7 @@ class ListOfTestsViewController: UIViewController {
     @IBOutlet weak var listOfTestsTableView: UITableView!
     
     var allTests: AllTests?
+    var User: User?
     
     override func viewDidLoad() {
         super.viewDidLoad()

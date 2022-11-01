@@ -8,15 +8,16 @@ class RegistrationViewController: UIViewController {
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     
     @IBOutlet var textFiledOutletCollection: [UITextField]!
-    let defaultBorderColor = UIColor(#colorLiteral(red: 0.554305017, green: 0.554305017, blue: 0.554305017, alpha: 1))
-    let errorBorderColor = UIColor(#colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1))
-    
+    let defaultBorderColor = UIColor(#colorLiteral(red: 0.554305017, green: 0.554305017, blue: 0.554305017, alpha: 0.5))
+    let errorBorderColor = UIColor(#colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 0.5))
+    var allTests: AllTests?
     
     
     override func viewDidLoad() {
         
         for textFiled in textFiledOutletCollection {
             textFiled.layer.borderWidth = 1.0
+            textFiled.layer.cornerRadius = 5
             textFiled.layer.borderColor = defaultBorderColor.cgColor
         }
         super.viewDidLoad()
@@ -24,39 +25,39 @@ class RegistrationViewController: UIViewController {
     }
     
     @IBAction func letsGoButtonIsPressed(_ sender: Any) {
-        
         createNewUser(name: userNameTextField.text ?? "",
                       password: passwordTextField.text ?? "",
                       confirmPassword: confirmPasswordTextField.text ?? "")
     }
-    
     func isCorrectPassword(password: String, confirmPassword: String) -> Bool {
         password == confirmPassword
     }
-    
     func checkTextFields() -> Bool{
-        if userNameTextField.text == nil {
+        if userNameTextField.text == "" {
             showAlert(title: "Error", message: "enter user name")
             userNameTextField.layer.borderColor = errorBorderColor.cgColor
             return false
+        } else {
+            userNameTextField.layer.borderColor = defaultBorderColor.cgColor
         }
-        if passwordTextField.text == nil {
+        if passwordTextField.text == "" {
             showAlert(title: "Error", message: "enter password")
             passwordTextField.layer.borderColor = errorBorderColor.cgColor
             return false
+        } else {
+            passwordTextField.layer.borderColor = defaultBorderColor.cgColor
         }
-        if confirmPasswordTextField.text == nil {
+        if confirmPasswordTextField.text == "" {
             showAlert(title: "Error", message: "re-enter the password")
             confirmPasswordTextField.layer.borderColor = errorBorderColor.cgColor
             return false
         }
-        if passwordTextField.text == confirmPasswordTextField.text {
+        if passwordTextField.text != confirmPasswordTextField.text {
             showAlert(title: "Error", message: "passwords don't match")
             passwordTextField.layer.borderColor = errorBorderColor.cgColor
             confirmPasswordTextField.layer.borderColor = errorBorderColor.cgColor
             return false
         }
-        
         return true
     }
     
@@ -71,6 +72,12 @@ class RegistrationViewController: UIViewController {
                         realm.add(newUser)
                     }
                 } catch {}
+                
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                if let listOfTestsViewController = storyboard.instantiateViewController(withIdentifier: "ListOfTestsViewController") as? ListOfTestsViewController {
+                    listOfTestsViewController.allTests = allTests
+                    self.present(listOfTestsViewController, animated: false)
+                }
             } else {
                 showAlert(title: "Errore", message: "User with that name already exists")
             }
